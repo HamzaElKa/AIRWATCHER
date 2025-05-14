@@ -4,15 +4,15 @@ using namespace std;
 class Mesure {
 protected:
     string timestamp;
-    int idAttribut;
+    string idAttribut;
     int value;
 
 public:
-    Mesure(const string& t = "", int idAttr = 0, int val = 0);
+    Mesure(const string& t = "", string idAttr = 0, int val = 0);
     string getTimestamp() const;
-    int getIdAttribut() const;
+    string getIdAttribut() const;
     int getValue() const;
     void setTimestamp(const string& t);
-    void setIdAttribut(int id);
+    void setIdAttribut(string id);
     void setValue(int val);
 };

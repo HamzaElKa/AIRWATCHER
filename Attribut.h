@@ -3,16 +3,16 @@ using namespace std;
 
 class Attribut {
 protected:
-    int idAttribut;
+    string idAttribut;
     string unit;
     string description;
 
 public:
-    Attribut(int id = 0, const string& u = "", const string& d = "");
-    int getIdAttribut() const;
+    Attribut(string id = "", const string& u = "", const string& d = "");
+    string getIdAttribut() const;
     string getUnit() const;
     string getDescription() const;
-    void setIdAttribut(int id);
+    void setIdAttribut(string id);
     void setUnit(const string& u);
     void setDescription(const string& d);
 };
