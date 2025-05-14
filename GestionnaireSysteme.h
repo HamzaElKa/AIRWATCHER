@@ -1,3 +1,6 @@
+#ifndef GESTIONNAIRESYSTEME_H
+#define GESTIONNAIRESYSTEME_H
+
 #include <iostream>
 #include <ctime>
 #include <vector>
@@ -28,3 +31,6 @@ class GestionnaireSysteme {
 
         
     };
+
+
+#endif // GESTIONNAIRESYSTEME_H

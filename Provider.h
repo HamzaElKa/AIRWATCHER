@@ -1,3 +1,6 @@
+#ifndef PROVIDER_H
+#define PROVIDER_H
+
 #include <list>
 #include "User.h"
 #include "AirCleaner.h"
@@ -18,3 +21,5 @@ public:
 
     void connexion() const override;
 };
+
+#endif // PROVIDER_H

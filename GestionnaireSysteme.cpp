@@ -10,7 +10,7 @@ Recuperer données du dossier data
     LoadData()
 */
 #include "GestionnaireSysteme.h"
-
+#include "Mesure.h"
 
 #include <fstream>
 #include <sstream>
@@ -24,6 +24,18 @@ vector<Attribut> GestionnaireSysteme::getAttributes() {
 vector<Sensor> GestionnaireSysteme::getSensors() {
     return sensors;
 }
+//constructeur
+GestionnaireSysteme::GestionnaireSysteme() {
+    // Initialisation des attributs et capteurs
+    attributs.clear();
+    sensors.clear();
+}
+//destructeur
+GestionnaireSysteme::~GestionnaireSysteme() {
+    // Libération des ressources si nécessaire
+    // Les vecteurs sont automatiquement libérés à la destruction de l'objet
+}
+
 
 void GestionnaireSysteme::loadData() {
     // Charger les données des capteurs et des mesures a partir des csv dans le dossier data

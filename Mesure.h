@@ -1,3 +1,6 @@
+#ifndef MESURE_H
+#define MESURE_H
+
 #include <string>
 using namespace std;
 
@@ -8,7 +11,10 @@ protected:
     int value;
 
 public:
-    Mesure(const string& t = "", string idAttr = 0, int val = 0);
+    // Constructeur par défaut
+    Mesure();
+    Mesure(const string& t = "", string idAttr = "", int val = 0);
+
     string getTimestamp() const;
     string getIdAttribut() const;
     int getValue() const;
@@ -16,3 +22,5 @@ public:
     void setIdAttribut(string id);
     void setValue(int val);
 };
+
+#endif // MESURE_H

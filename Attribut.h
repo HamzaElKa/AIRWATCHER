@@ -1,3 +1,6 @@
+#ifndef ATTRIBUT_H
+#define ATTRIBUT_H
+
 #include <string>
 using namespace std;
 
@@ -16,3 +19,5 @@ public:
     void setUnit(const string& u);
     void setDescription(const string& d);
 };
+
+#endif // ATTRIBUT_H

@@ -1,3 +1,6 @@
+#ifndef SENSOR_H
+#define SENSOR_H
+
 #include <string>
 #include <list>
 #include "Mesure.h"
@@ -22,3 +25,5 @@ public:
     void setLongitude(float lon);
     void addMesure(const Mesure& m);
 };
+
+#endif // SENSOR_H
