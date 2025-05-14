@@ -13,8 +13,11 @@ class GestionnaireSysteme {
         GestionnaireSysteme();
         ~GestionnaireSysteme();
 
-        void LoadData();
+        void loadData();
         //Calcul moyenne AQI sur une zone et période donnée
+        //CalculMoyenneAQI(float lat, float lon, float ray, time_t start, time_t end);
+        vector<Attribut> getAttributes();
+        vector<Sensor> getSensors();
 
 
     protected:

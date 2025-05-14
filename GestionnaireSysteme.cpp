@@ -16,8 +16,16 @@ Recuperer données du dossier data
 #include <sstream>
 #include <algorithm>
 
+//getters
+vector<Attribut> GestionnaireSysteme::getAttributes() {
+    return attributs;
+}
 
-void GestionnaireSysteme::LoadData() {
+vector<Sensor> GestionnaireSysteme::getSensors() {
+    return sensors;
+}
+
+void GestionnaireSysteme::loadData() {
     // Charger les données des capteurs et des mesures a partir des csv dans le dossier data
     ifstream attrFile("data/attributes.csv");
     string line;

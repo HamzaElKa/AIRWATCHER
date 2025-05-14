@@ -8,20 +8,20 @@ int main() {
     gs.loadData();
 
     // Afficher le nombre d'attributs chargés
-    cout << "Attributs chargés : " << gs.attributes.size() << endl;
+    cout << "Attributs chargés : " << gs.getAttributes().size() << endl;
 
     // Afficher le nombre de capteurs chargés
-    cout << "Capteurs chargés : " << gs.sensors.size() << endl;
+    cout << "Capteurs chargés : " << gs.getSensors().size() << endl;
 
     // Afficher les mesures du premier capteur (si existant)
-    if (!gs.sensors.empty()) {
-        const auto& firstSensor = gs.sensors.front();
+    if (!gs.getSensors().empty()) {
+        const auto& firstSensor = gs.getSensors().front();
         cout << "Capteur : " << firstSensor.getIdSensor() << endl;
         cout << "Nombre de mesures : " << firstSensor.getMesures().size() << endl;
         // Afficher les 3 premières mesures
         int count = 0;
         for (const auto& m : firstSensor.getMesures()) {
-            cout << "Mesure: " << m.getDate() << ", " << m.getAttributeId() << ", " << m.getValue() << endl;
+            cout << "Mesure: " << m.getTimestamp() << ", " << m.getIdAttribut() << ", " << m.getValue() << endl;
             if (++count >= 3) break;
         }
     }
