@@ -35,7 +35,66 @@ GestionnaireSysteme::~GestionnaireSysteme() {
     // Libération des ressources si nécessaire
     // Les vecteurs sont automatiquement libérés à la destruction de l'objet
 }
+double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
+{
+    string attribut = mesure.getIdAttribut();
+    double valeur = mesure.getValeur();
 
+    // PM2.5
+    if (attribut == "PM2.5")
+    {
+        if (valeur <= 12) return valeur * 50 / 12;
+        else if (valeur <= 35.4) return 50 + (valeur - 12.1) * (50.0 / (35.4 - 12.1));
+        else return 100 + (valeur - 35.4) * (50.0 / (55.4 - 35.4));
+    }
+    // PM10
+    else if (attribut == "PM10")
+    {
+        if (valeur <= 54) return valeur * 50 / 54;
+        else if (valeur <= 154) return 50 + (valeur - 54) * (50.0 / 100.0);
+        else return 100 + (valeur - 154) * (50.0 / 100.0);
+    }
+    // O3
+    else if (attribut == "O3")
+    {
+        if (valeur <= 0.054) return valeur * 50 / 0.054;
+        else if (valeur <= 0.070) return 50 + (valeur - 0.055) * (50.0 / (0.070 - 0.055));
+        else return 100 + (valeur - 0.070) * (50.0 / 0.030);
+    }
+
+    return -1.0;
+}
+double GestionnaireSysteme::consulterMoyenneQualite(double longitude, double latitude, double rayon,
+                                                    const string& dateDebut, const string& dateFin)
+{
+    double sommeAQI = 0.0;
+    int compteur = 0;
+
+    for (Sensor& capteur : sensors)
+    {
+        double distance = sqrt(pow(capteur.getLatitude() - latitude, 2) +
+                               pow(capteur.getLongitude() - longitude, 2));
+
+        if (distance <= rayon)
+        {
+            list<Mesure> mesures = capteur.getMesuresDansIntervalle(dateDebut, dateFin);
+            for (const Mesure& mesure : mesures)
+            {
+                double aqi = convertirEnAQI(mesure);
+                if (aqi >= 0)
+                {
+                    sommeAQI += aqi;
+                    compteur++;
+                }
+            }
+        }
+    }
+
+    if (compteur == 0)
+        return -1.0;
+
+    return sommeAQI / compteur;
+}
 
 void GestionnaireSysteme::loadData() {
     // Charger les données des capteurs et des mesures a partir des csv dans le dossier data

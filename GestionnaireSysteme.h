@@ -21,8 +21,10 @@ class GestionnaireSysteme {
         //CalculMoyenneAQI(float lat, float lon, float ray, time_t start, time_t end);
         vector<Attribut> getAttributes();
         vector<Sensor> getSensors();
+        double consulterMoyenneQualite(double lon, double lat, double rayon,
+                               const std::string& dateDebut, const std::string& dateFin);
 
-
+        double convertirEnAQI(const Mesure& mesure);
     protected:
         //sensors
         vector<Sensor> sensors;

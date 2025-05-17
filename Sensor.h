@@ -24,6 +24,7 @@ public:
     void setLatitude(float lat);
     void setLongitude(float lon);
     void addMesure(const Mesure& m);
+    std::list<Mesure> getMesuresDansIntervalle(const std::string& dateDebut, const std::string& dateFin);
 };
 
 #endif // SENSOR_H
