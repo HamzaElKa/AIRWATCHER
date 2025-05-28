@@ -15,7 +15,7 @@ int main() {
 
     //--- TESTS ---//
 
-    //SCEnARIO 1 ajoute par Hamza corrige par Yanis et Pilou
+    /*//SCEnARIO 1 ajoute par Hamza corrige par Yanis et Pilou
     cout << "\n On TEST LE SCENARIO 1 : Moyenne AQI sur une zone et periode donnee" << endl;
     
     double longitude =5.3;
@@ -59,7 +59,7 @@ int main() {
 
 
         
-    }
+    }*/
     // ---Fin des TESTS---
 
     //Creation de l'interface utilisateur
@@ -75,11 +75,12 @@ int main() {
         cin >> choix;
         cin.ignore(); // Pour ignorer le retour à la ligne après l'entrée de l'utilisateur
 
-double longitude =5.3;
-    double latitude = 46.6;
-    double rayon = 30.0;
-    string dateDebut = "2019-02-01 00:00:00";
-    string dateFin = "2019-03-03 00:00:00";
+        double longitude;
+        double latitude;
+        double rayon;
+        string dateDebut;
+        string dateFin;
+        string idSensor;
 
         if (choix == 1) {
             cout << "Entrez la longitude, latitude, rayon (en km), date de debut et date de fin (format YYYY-MM-DD HH:MM:SS) : ";
