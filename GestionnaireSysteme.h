@@ -1,6 +1,6 @@
 #ifndef GESTIONNAIRESYSTEME_H
 #define GESTIONNAIRESYSTEME_H
-
+#include <unordered_map>
 #include <iostream>
 #include <ctime>
 #include <vector>
@@ -9,6 +9,7 @@
 #include "Sensor.h"
 #include "Mesure.h"
 #include "Attribut.h"
+#include "User.h"
 
 using namespace std;
 class GestionnaireSysteme {
@@ -31,6 +32,7 @@ class GestionnaireSysteme {
         //getters
         vector<Attribut> getAttributes();
         vector<Sensor> getSensors();
+        vector<User> getUsers();
         Sensor* getSensorById(const string& id); 
 
     protected:
@@ -38,8 +40,11 @@ class GestionnaireSysteme {
         vector<Sensor> sensors;
         //attributs
         vector<Attribut> attributs;
-
+        //users
+        vector<User> users;
         
+        unordered_map<string, User*> capteurToUser;
+
     };
 
 

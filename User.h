@@ -5,16 +5,18 @@ using namespace std;
 class User {
 protected:
     string idUser;
-    string mdp;
+    string idSensor;
+    int nbPoints;
 
 public:
-    User(const string& id = "", const string& m = "");
+    User(const string& idUser = "", const string& idSensor = "");
 
     string getIdUser() const;
-    string getMdp() const;
+    string getIdSensor() const;
+    int getNbPoints() const;
 
     void setIdUser(const string& id);
-    void setMdp(const string& m);
+    void setIdSensor(const string& id);
+    void setNbPoints(int points);
 
-    virtual void connexion() const;  // virtuelle si besoin
 };

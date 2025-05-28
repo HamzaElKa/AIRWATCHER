@@ -25,6 +25,11 @@ vector<Attribut> GestionnaireSysteme::getAttributes() {
 vector<Sensor> GestionnaireSysteme::getSensors() {
     return sensors;
 }
+
+vector<User> GestionnaireSysteme::getUsers() {
+    return users;
+}
+
 Sensor* GestionnaireSysteme::getSensorById(const string& id) {
     for (Sensor& capteur : sensors)
     {
@@ -129,6 +134,13 @@ vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(c
         list<Mesure> mesuresComparaison = capteur.getMesuresDansIntervalle(dateDebut, dateFin);
         double similarite = 0.0;
 
+        // Si le capteur appartient à un utilisateur, incrémenter le nombre de points
+        auto it = capteurToUser.find(capteur.getIdSensor());
+        if (it != capteurToUser.end()) {
+            it->second->setNbPoints(it->second->getNbPoints() + 1);
+            cout << "Capteur " << capteur.getIdSensor() << " appartient a l'utilisateur " << it->second->getIdUser() << endl;
+        }
+
         // Calculer la similarité
         for (const Mesure& mRef : mesuresRef)
         {
@@ -182,6 +194,12 @@ double GestionnaireSysteme::consulterMoyenneQualite(double longitude, double lat
 
         if (distance <= rayon)
         {
+            auto it = capteurToUser.find(capteur.getIdSensor());
+            if (it != capteurToUser.end()) {
+                it->second->setNbPoints(it->second->getNbPoints() + 1);
+                cout << "Capteur " << capteur.getIdSensor() << " appartient a l'utilisateur " << it->second->getIdUser() << endl;
+            }
+
             list<Mesure> mesures = capteur.getMesuresDansIntervalle(dateDebut, dateFin);
             for (const Mesure& mesure : mesures)
             {
@@ -249,4 +267,21 @@ void GestionnaireSysteme::loadData() {
         }
     }
     measFile.close();
+
+    ifstream usersFile("data/users.csv");
+    while (getline(usersFile, line)) {
+        stringstream ss(line);
+        string idUser, idSensor;
+        getline(ss, idUser, ';');
+        getline(ss, idSensor, ';');
+        // Enlève le retour à la ligne ou espace éventuel
+        if (!idUser.empty() && !idSensor.empty()) {
+            // Retire les espaces ou retours à la ligne en fin de champ
+            idSensor.erase(remove_if(idSensor.begin(), idSensor.end(), ::isspace), idSensor.end());
+            users.emplace_back(idUser, idSensor);
+            capteurToUser[idSensor] = &users.back();
+        }
+    }
+    usersFile.close();
+    
 }

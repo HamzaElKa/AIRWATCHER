@@ -1,9 +1,9 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -O2
 
-SRC = main.cpp GestionnaireSysteme.cpp Sensor.cpp Mesure.cpp Attribut.cpp
+SRC = main.cpp GestionnaireSysteme.cpp Sensor.cpp Mesure.cpp Attribut.cpp User.cpp
 OBJ = $(SRC:.cpp=.o)
-DEPS = GestionnaireSysteme.h Sensor.h Mesure.h Attribut.h
+DEPS = GestionnaireSysteme.h Sensor.h Mesure.h Attribut.h  User.h
 
 TARGET = airwatcher
 
