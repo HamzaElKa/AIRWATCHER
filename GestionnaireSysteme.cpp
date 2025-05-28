@@ -15,6 +15,7 @@ Recuperer données du dossier data
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <cmath>
 
 //getters
 vector<Attribut> GestionnaireSysteme::getAttributes() {
@@ -37,29 +38,26 @@ GestionnaireSysteme::~GestionnaireSysteme() {
 }
 double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
 {
-    string attribut = mesure.getIdAttribut();
-    double valeur = mesure.getValeur();
+    const std::string& attribut = mesure.getIdAttribut();
+    double valeur = mesure.getValue();
 
-    // PM2.5
     if (attribut == "PM2.5")
     {
-        if (valeur <= 12) return valeur * 50 / 12;
-        else if (valeur <= 35.4) return 50 + (valeur - 12.1) * (50.0 / (35.4 - 12.1));
-        else return 100 + (valeur - 35.4) * (50.0 / (55.4 - 35.4));
+        if (valeur <= 12.0) return valeur * 50.0 / 12.0;
+        else if (valeur <= 35.4) return 50.0 + (valeur - 12.1) * (50.0 / (35.4 - 12.1));
+        else return 100.0 + (valeur - 35.4) * (50.0 / (55.4 - 35.4));
     }
-    // PM10
     else if (attribut == "PM10")
     {
-        if (valeur <= 54) return valeur * 50 / 54;
-        else if (valeur <= 154) return 50 + (valeur - 54) * (50.0 / 100.0);
-        else return 100 + (valeur - 154) * (50.0 / 100.0);
+        if (valeur <= 54.0) return valeur * 50.0 / 54.0;
+        else if (valeur <= 154.0) return 50.0 + (valeur - 54.0) * (50.0 / 100.0);
+        else return 100.0 + (valeur - 154.0) * (50.0 / 100.0);
     }
-    // O3
     else if (attribut == "O3")
     {
-        if (valeur <= 0.054) return valeur * 50 / 0.054;
-        else if (valeur <= 0.070) return 50 + (valeur - 0.055) * (50.0 / (0.070 - 0.055));
-        else return 100 + (valeur - 0.070) * (50.0 / 0.030);
+        if (valeur <= 0.054) return valeur * 50.0 / 0.054;
+        else if (valeur <= 0.070) return 50.0 + (valeur - 0.055) * (50.0 / (0.070 - 0.055));
+        else return 100.0 + (valeur - 0.070) * (50.0 / 0.030);
     }
 
     return -1.0;
@@ -104,9 +102,9 @@ void GestionnaireSysteme::loadData() {
     while (getline(attrFile, line)) {
         stringstream ss(line);
         string id, unit, description;
-        getline(ss, id, ',');
-        getline(ss, unit, ',');
-        getline(ss, description, ',');
+        getline(ss, id, ';');
+        getline(ss, unit, ';');
+        getline(ss, description, ';');
         if (!id.empty())
             attributs.emplace_back(id, unit, description);
     }

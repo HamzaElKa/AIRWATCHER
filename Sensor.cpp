@@ -1,4 +1,7 @@
 #include "Sensor.h"
+#include <sstream>
+#include <iomanip>
+#include <ctime>
 time_t convertirEnTimeT(const string& dateStr)
 {
     tm tm = {};

@@ -5,13 +5,23 @@ using namespace std;
 int main() {
     GestionnaireSysteme gs;
     gs.loadData();  
+    // Chargement des capteurs, mesures et attributs depuis les fichiers CSV testé et réussi
 
-    cout << "Attributs chargés : " << gs.getAttributes().size() << endl;
+    
 
-    cout << "Capteurs chargés : " << gs.getSensors().size() << endl;
+
+
+
+
+    //SCEnARIO 1 ajouté par Hamza
+    cout << "\n--- SCENARIO 1 ---" << endl;    
+    cout << "Attributs charges : " << gs.getAttributes().size() << endl;
+
+    cout << "Capteurs charges : " << gs.getSensors().size() << endl;
 
     if (!gs.getSensors().empty()) {
         const Sensor& firstSensor = gs.getSensors().front();
+        cout << "Premier capteur : " << firstSensor.getIdSensor() << endl;
         cout << "\n--- Informations sur le premier capteur ---" << endl;
         cout << "ID Capteur : " << firstSensor.getIdSensor() << endl;
         cout << "Nombre de mesures : " << firstSensor.getMesures().size() << endl;
@@ -20,7 +30,7 @@ int main() {
         for (const Mesure& m : firstSensor.getMesures()) {
             cout << "Mesure : " << m.getTimestamp() << ", "
                  << m.getIdAttribut() << ", "
-                 << m.getValeur() << endl;
+                 << m.getValue() << endl;
             if (++count >= 3) break;
         }
     }
@@ -33,9 +43,9 @@ int main() {
 
     double moyenneAQI = gs.consulterMoyenneQualite(longitude, latitude, rayon, dateDebut, dateFin);
 
-    cout << "\n--- Résultat scénario 1 : Moyenne AQI ---" << endl;
+    cout << "\n--- Resultat scenario 1 : Moyenne AQI ---" << endl;
     if (moyenneAQI < 0)
-        cout << "Aucune donnée AQI disponible pour la zone et période données." << endl;
+        cout << "Aucune donnée AQI disponible pour la zone et periode donnees." << endl;
     else
         cout << "Moyenne AQI sur la zone (" << latitude << ", " << longitude
              << "), rayon " << rayon << " km entre " << dateDebut
