@@ -25,6 +25,16 @@ vector<Attribut> GestionnaireSysteme::getAttributes() {
 vector<Sensor> GestionnaireSysteme::getSensors() {
     return sensors;
 }
+Sensor* GestionnaireSysteme::getSensorById(const string& id) {
+    for (Sensor& capteur : sensors)
+    {
+        if (capteur.getIdSensor() == id)
+        {
+            return &capteur; // Retourne le capteur trouvé
+        }
+    }
+    return nullptr;
+}
 //constructeur
 GestionnaireSysteme::GestionnaireSysteme() {
     // Initialisation des attributs et capteurs
@@ -41,13 +51,7 @@ double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
     const std::string& attribut = mesure.getIdAttribut();
     double valeur = mesure.getValue();
 
-    if (attribut == "PM2.5")
-    {
-        if (valeur <= 12.0) return valeur * 50.0 / 12.0;
-        else if (valeur <= 35.4) return 50.0 + (valeur - 12.1) * (50.0 / (35.4 - 12.1));
-        else return 100.0 + (valeur - 35.4) * (50.0 / (55.4 - 35.4));
-    }
-    else if (attribut == "PM10")
+    if (attribut == "PM10")
     {
         if (valeur <= 54.0) return valeur * 50.0 / 54.0;
         else if (valeur <= 154.0) return 50.0 + (valeur - 54.0) * (50.0 / 100.0);
@@ -62,6 +66,52 @@ double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
 
     return -1.0;
 }
+
+vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(const string& idSensor, const string& dateDebut, const string& dateFin)
+{
+    vector<pair<Sensor, double>> resultats;
+    Sensor* capteurReference = getSensorById(idSensor);
+    if (!capteurReference)
+        return resultats; // Capteur non trouvé
+
+    // Obtenir les mesures du capteur de référence
+    list<Mesure> mesuresRef = capteurReference->getMesuresDansIntervalle(dateDebut, dateFin);
+
+    for (Sensor& capteur : sensors)
+    {
+        if (capteur.getIdSensor() == idSensor)
+            continue; // Ignorer le capteur de référence
+
+        list<Mesure> mesuresComparaison = capteur.getMesuresDansIntervalle(dateDebut, dateFin);
+        double similarite = 0.0;
+
+        // Calculer la similarité
+        for (const Mesure& mRef : mesuresRef)
+        {
+            for (const Mesure& mComp : mesuresComparaison)
+            {
+                if (mRef.getIdAttribut() == mComp.getIdAttribut())
+                {
+                    similarite += fabs(mRef.getValue() - mComp.getValue());
+                }
+            }
+        }
+        if (!mesuresComparaison.empty())
+            similarite /= mesuresComparaison.size();
+
+        resultats.emplace_back(capteur, similarite);
+    }
+
+    // Trier par similarité décroissante
+    sort(resultats.begin(), resultats.end(),
+         [](const pair<Sensor, double>& a, const pair<Sensor, double>& b) {
+             return a.second > b.second;
+         });
+
+    return resultats;
+}
+    
+
 double GestionnaireSysteme::consulterMoyenneQualite(double longitude, double latitude, double rayon, const string& dateDebut, const string& dateFin)
 {
     double sommeAQI = 0.0;

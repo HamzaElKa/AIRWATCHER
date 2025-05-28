@@ -13,28 +13,8 @@ int main() {
 
 
 
-    //SCEnARIO 1 ajouté par Hamza
-    /*cout << "\n--- SCENARIO 1 ---" << endl;    
-    cout << "Attributs charges : " << gs.getAttributes().size() << endl;
-
-    cout << "Capteurs charges : " << gs.getSensors().size() << endl;
-
-    if (!gs.getSensors().empty()) {
-        const Sensor& firstSensor = gs.getSensors().front();
-        cout << "Premier capteur : " << firstSensor.getIdSensor() << endl;
-        cout << "\n--- Informations sur le premier capteur ---" << endl;
-        cout << "ID Capteur : " << firstSensor.getIdSensor() << endl;
-        cout << "Nombre de mesures : " << firstSensor.getMesures().size() << endl;
-
-        int count = 0;
-        for (const Mesure& m : firstSensor.getMesures()) {
-            cout << "Mesure : " << m.getTimestamp() << ", "
-                 << m.getIdAttribut() << ", "
-                 << m.getValue() << endl;
-            if (++count >= 3) break;
-        }
-    }*/
-
+    //SCEnARIO 1 ajouté par Hamza corrigé par Yanis et Pilou
+    cout << "\n On TEST LE SCENARIO 1 : Moyenne AQI sur une zone et période donnee" << endl;
     double longitude = 4.85;
     double latitude = 45.75;
     double rayon = 10.0;
@@ -50,6 +30,38 @@ int main() {
         cout << "Moyenne AQI sur la zone (" << latitude << ", " << longitude
              << "), rayon " << rayon << " km entre " << dateDebut
              << " et " << dateFin << " : " << moyenneAQI << endl;
+
+
+
+
+    // SCENARIO 2 par Yanis et Pilou
+    cout << "\n On TEST LE SCENARIO 2 : Classement des capteurs par similarite" << endl;
+    string idSensor = "Sensor1"; // Remplacez par un ID de capteur valide
+    //j'utilise les dates de début et de fin du scénario 1
+    
+    cout << "\n--- On lance le classement des capteurs par similarite ---" << endl;
+    vector<pair<Sensor, double>> classement = gs.classerCapteursParSimilarite(idSensor, dateDebut, dateFin);
+
+    cout << "\n--- Resultat scenario 2 : Classement des capteurs par similarite ---" << endl;
+    if (classement.empty()) {
+        cout << "Aucun capteur trouvé pour l'ID donné ou aucune mesure disponible." << endl;
+    } else {
+        cout << "Classement des capteurs par similarite pour le capteur " << idSensor << " :" << endl;
+        for (const auto& pair : classement) {
+            const Sensor& sensor = pair.first;
+            double similarite = pair.second;
+            cout << "Capteur ID: " << sensor.getIdSensor() 
+                 << ", Similarite: " << similarite << "%" << endl;
+        }
+
+
+        
+    }
+
+    
+
+
+
 
     return 0;
 }
