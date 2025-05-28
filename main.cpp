@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include "GestionnaireSysteme.h"
+#include <limits>
 using namespace std;
 
 int main() {
@@ -63,9 +64,9 @@ int main() {
 
     //Creation de l'interface utilisateur
     while (true) {
-        cout << "\n----- Interface utilisateur -----" << endl;
-        cout << "Bienvenue dans le gestionnaire de capteurs AQI AIRWATCHER!" << endl;
-        cout << "----- 2 scenarios sont disponibles -----" << endl;
+        cout << "\n<=====    Interface utilisateur     =====>" << endl;
+        cout <<   "\nBienvenue dans le gestionnaire de capteurs AQI AIRWATCHER!" << endl;
+        cout <<   "Deux scenarios sont disponibles:" << endl;
         cout << "1. Consulter la moyenne AQI sur une zone et periode donnee." << endl;
         cout << "2. Classer les capteurs par similarite." << endl;
         cout << "3. Quitter le programme." << endl;
@@ -121,6 +122,7 @@ double longitude =5.3;
             iss >> heureFin;
             dateFin += " " + heureFin;
 
+            cout << idSensor << " " << dateDebut << " " << dateFin << endl;
             vector<pair<Sensor, double>> classement = gs.classerCapteursParSimilarite(idSensor, dateDebut, dateFin);
             if (classement.empty()) {
                 cout << "Aucun capteur trouve pour l'ID donne ou aucune mesure disponible." << endl;
@@ -136,6 +138,11 @@ double longitude =5.3;
         }
 
         else if (choix == 3) {
+            cout << "Fonctionnalite non implemente pour le moment." << endl;
+            // Ici, vous pouvez ajouter d'autres fonctionnalités ou options si nécessaire
+        }
+
+        else if (choix == 4) {
             break; // Quitter le programme
         } 
         else {

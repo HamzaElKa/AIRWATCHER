@@ -8,8 +8,8 @@ int main() {
     gs.loadData();  
     // Chargement des capteurs, mesures et attributs depuis les fichiers CSV teste et reussi
 
-    //outil pour les tests
-    //on souhaite connaitre la durée d'execution d'une méthode
+    //outil pour les tests --> une fonction qui prend en entrée une fonction et ses arguments
+    //on souhaite connaitre la durée d'execution de la fonction en entrée
     //et comparer les résultats obtenus avec les résultats attendus
     
 
