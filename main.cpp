@@ -16,11 +16,12 @@ int main() {
 
     //SCEnARIO 1 ajoute par Hamza corrige par Yanis et Pilou
     cout << "\n On TEST LE SCENARIO 1 : Moyenne AQI sur une zone et periode donnee" << endl;
-    double longitude = 4.85;
-    double latitude = 45.75;
-    double rayon = 10.0;
-    string dateDebut = "2019-01-01 00:00:00";
-    string dateFin = "2019-01-03 00:00:00";
+    
+    double longitude =5.3;
+    double latitude = 46.6;
+    double rayon = 30.0;
+    string dateDebut = "2019-02-01 00:00:00";
+    string dateFin = "2019-03-03 00:00:00";
     cout <<"\n --- On lance la consultation de la moyenne AQI ---" << endl;
     double moyenneAQI = gs.consulterMoyenneQualite(longitude, latitude, rayon, dateDebut, dateFin);
 

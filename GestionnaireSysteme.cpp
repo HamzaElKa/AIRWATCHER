@@ -11,7 +11,7 @@ Recuperer données du dossier data
 */
 #include "GestionnaireSysteme.h"
 #include "Mesure.h"
-
+#include <cmath>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
@@ -51,20 +51,64 @@ double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
     const std::string& attribut = mesure.getIdAttribut();
     double valeur = mesure.getValue();
 
-    if (attribut == "PM10")
+    if (attribut == "O3") // Ozone µg/m3
     {
-        if (valeur <= 54.0) return valeur * 50.0 / 54.0;
-        else if (valeur <= 154.0) return 50.0 + (valeur - 54.0) * (50.0 / 100.0);
-        else return 100.0 + (valeur - 154.0) * (50.0 / 100.0);
+        valeur = valeur * 240/100; // Conversion de % à µg/m3
+        if (valeur <= 29) return 1;
+        else if (valeur <= 54) return 2;
+        else if (valeur <= 79) return 3;
+        else if (valeur <= 104) return 4;
+        else if (valeur <= 129) return 5;
+        else if (valeur <= 149) return 6;
+        else if (valeur <= 179) return 7;
+        else if (valeur <= 209) return 8;
+        else if (valeur <= 239) return 9;
+        else return 10;
     }
-    else if (attribut == "O3")
+    else if (attribut == "SO2") // Dioxyde de soufre µg/m3
     {
-        if (valeur <= 0.054) return valeur * 50.0 / 0.054;
-        else if (valeur <= 0.070) return 50.0 + (valeur - 0.055) * (50.0 / (0.070 - 0.055));
-        else return 100.0 + (valeur - 0.070) * (50.0 / 0.030);
+        valeur = valeur * 500/100; // Conversion de % à µg/m3
+        if (valeur <= 39) return 1;
+        else if (valeur <= 79) return 2;
+        else if (valeur <= 119) return 3;
+        else if (valeur <= 159) return 4;
+        else if (valeur <= 199) return 5;
+        else if (valeur <= 249) return 6;
+        else if (valeur <= 299) return 7;
+        else if (valeur <= 399) return 8;
+        else if (valeur <= 499) return 9;
+        else return 10;
+    }
+    else if (attribut == "NO2") // Dioxyde d'azote µg/m3
+    {
+        valeur = valeur * 400/100; // Conversion de % à µg/m3
+        if (valeur <= 29) return 1;
+        else if (valeur <= 54) return 2;
+        else if (valeur <= 84) return 3;
+        else if (valeur <= 109) return 4;
+        else if (valeur <= 134) return 5;
+        else if (valeur <= 164) return 6;
+        else if (valeur <= 199) return 7;
+        else if (valeur <= 274) return 8;
+        else if (valeur <= 399) return 9;
+        else return 10;
+    }
+    else if (attribut == "PM10") // Particules fines µg/m3
+    {
+        valeur = valeur * 80/100; // Conversion de % à µg/m3
+        if (valeur <= 6) return 1;
+        else if (valeur <= 13) return 2;
+        else if (valeur <= 20) return 3;
+        else if (valeur <= 27) return 4;
+        else if (valeur <= 34) return 5;
+        else if (valeur <= 41) return 6;
+        else if (valeur <= 49) return 7;
+        else if (valeur <= 64) return 8;
+        else if (valeur <= 79) return 9;
+        else return 10;
     }
 
-    return -1.0;
+    return -1.0; // Attribut non reconnu
 }
 
 vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(const string& idSensor, const string& dateDebut, const string& dateFin)
@@ -111,6 +155,19 @@ vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(c
     return resultats;
 }
     
+#include <cmath>
+
+static double haversine(double lat1, double lon1, double lat2, double lon2) {
+    const double R = 6371.0; // Rayon moyen de la Terre en km
+    double dLat = (lat2 - lat1) * M_PI / 180.0;
+    double dLon = (lon2 - lon1) * M_PI / 180.0;
+    double a = sin(dLat/2) * sin(dLat/2) +
+               cos(lat1 * M_PI / 180.0) * cos(lat2 * M_PI / 180.0) *
+               sin(dLon/2) * sin(dLon/2);
+    double c = 2 * atan2(sqrt(a), sqrt(1-a));
+    return R * c;
+}
+
 
 double GestionnaireSysteme::consulterMoyenneQualite(double longitude, double latitude, double rayon, const string& dateDebut, const string& dateFin)
 {
@@ -119,8 +176,7 @@ double GestionnaireSysteme::consulterMoyenneQualite(double longitude, double lat
 
     for (Sensor& capteur : sensors)
     {
-        double distance = sqrt(pow(capteur.getLatitude() - latitude, 2) +
-                               pow(capteur.getLongitude() - longitude, 2));
+        double distance = haversine(latitude, longitude, capteur.getLatitude(), capteur.getLongitude());
 
         if (distance <= rayon)
         {
