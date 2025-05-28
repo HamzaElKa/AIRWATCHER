@@ -62,8 +62,7 @@ double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
 
     return -1.0;
 }
-double GestionnaireSysteme::consulterMoyenneQualite(double longitude, double latitude, double rayon,
-                                                    const string& dateDebut, const string& dateFin)
+double GestionnaireSysteme::consulterMoyenneQualite(double longitude, double latitude, double rayon, const string& dateDebut, const string& dateFin)
 {
     double sommeAQI = 0.0;
     int compteur = 0;

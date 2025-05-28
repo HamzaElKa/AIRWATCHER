@@ -14,7 +14,7 @@ int main() {
 
 
     //SCEnARIO 1 ajouté par Hamza
-    cout << "\n--- SCENARIO 1 ---" << endl;    
+    /*cout << "\n--- SCENARIO 1 ---" << endl;    
     cout << "Attributs charges : " << gs.getAttributes().size() << endl;
 
     cout << "Capteurs charges : " << gs.getSensors().size() << endl;
@@ -33,14 +33,14 @@ int main() {
                  << m.getValue() << endl;
             if (++count >= 3) break;
         }
-    }
+    }*/
 
     double longitude = 4.85;
     double latitude = 45.75;
     double rayon = 10.0;
     string dateDebut = "2019-01-01 00:00:00";
     string dateFin = "2019-01-03 00:00:00";
-
+    cout <<"\n --- On lance la consultation de la moyenne AQI ---" << endl;
     double moyenneAQI = gs.consulterMoyenneQualite(longitude, latitude, rayon, dateDebut, dateFin);
 
     cout << "\n--- Resultat scenario 1 : Moyenne AQI ---" << endl;
