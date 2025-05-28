@@ -147,8 +147,10 @@ vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(c
 
         // Ajout d'un point à l'utilisateur propriétaire du capteur
         User* user = getUserBySensorId(capteur.getIdSensor());
-        if (user) user->setNbPoints(user->getNbPoints() + 1);
-
+        if (user) { 
+            user->setNbPoints(user->getNbPoints() + 1);
+            cout<< "Capteur " << capteur.getIdSensor() << " appartient a l'utilisateur " << user->getIdUser() << endl;
+        }
 
         list<Mesure> mesuresComparaison = capteur.getMesuresDansIntervalle(dateDebut, dateFin);
         double similarite = 0.0;
@@ -207,8 +209,10 @@ double GestionnaireSysteme::consulterMoyenneQualite(double longitude, double lat
         {
             // Ajout d'un point à l'utilisateur propriétaire du capteur
             User* user = getUserBySensorId(capteur.getIdSensor());
-            if (user) user->setNbPoints(user->getNbPoints() + 1);
-
+            if (user) {
+                user->setNbPoints(user->getNbPoints() + 1);
+                cout<< "Capteur " << capteur.getIdSensor() << " appartient a l'utilisateur " << user->getIdUser() << endl;
+            }
             list<Mesure> mesures = capteur.getMesuresDansIntervalle(dateDebut, dateFin);
             for (const Mesure& mesure : mesures)
             {

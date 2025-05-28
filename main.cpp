@@ -15,12 +15,12 @@ int main() {
 
     //--- TESTS ---//
 
-    /*//SCEnARIO 1 ajoute par Hamza corrige par Yanis et Pilou
+    //SCEnARIO 1 ajoute par Hamza corrige par Yanis et Pilou
     cout << "\n On TEST LE SCENARIO 1 : Moyenne AQI sur une zone et periode donnee" << endl;
     
-    double longitude =5.3;
-    double latitude = 46.6;
-    double rayon = 30.0;
+    double longitude =3.2; //-1;  3.2
+    double latitude =45.2; // 46.8;  45.2
+    double rayon = 30.0; 
     string dateDebut = "2019-02-01 00:00:00";
     string dateFin = "2019-03-03 00:00:00";
     cout <<"\n --- On lance la consultation de la moyenne AQI ---" << endl;
@@ -35,8 +35,8 @@ int main() {
              << " et " << dateFin << " : " << moyenneAQI << endl;
 
 
-
-
+    
+    
     // SCENARIO 2 par Yanis et Pilou
     cout << "\n On TEST LE SCENARIO 2 : Classement des capteurs par similarite" << endl;
     string idSensor = "Sensor1"; // Remplacez par un ID de capteur valide
@@ -59,7 +59,7 @@ int main() {
 
 
         
-    }*/
+    }
     // ---Fin des TESTS---
 
     //Creation de l'interface utilisateur
@@ -161,8 +161,7 @@ int main() {
 
         }
     }
-    //liberation des ressources
-    gs.~GestionnaireSysteme();
+    
     cout << "\n--- Fin du programme ---" << endl;
 
 
