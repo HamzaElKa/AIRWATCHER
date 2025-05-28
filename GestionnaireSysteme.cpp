@@ -40,6 +40,14 @@ Sensor* GestionnaireSysteme::getSensorById(const string& id) {
     }
     return nullptr;
 }
+
+User* GestionnaireSysteme::getUserBySensorId(const string& idSensor) {
+    for (User& user : users) {
+        if (user.getIdSensor() == idSensor)
+            return &user;
+    }
+    return nullptr;
+}
 //constructeur
 GestionnaireSysteme::GestionnaireSysteme() {
     // Initialisation des attributs et capteurs
@@ -121,11 +129,11 @@ vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(c
     vector<pair<Sensor, double>> resultats;
     Sensor* capteurReference = getSensorById(idSensor);
     // Si le capteur appartient à un utilisateur, incrémenter le nombre de points
-    auto it = capteurToUser.find(capteurReference->getIdSensor());
+    /*auto it = capteurToUser.find(capteurReference->getIdSensor());
         if (it != capteurToUser.end()) {
             it->second->setNbPoints(it->second->getNbPoints() + 1);
             cout << "Capteur " << capteurReference->getIdSensor() << " appartient a l'utilisateur " << it->second->getIdUser() << endl;
-        }
+        }*/
     if (!capteurReference)
         return resultats; // Capteur non trouvé
 
@@ -136,6 +144,11 @@ vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(c
     {
         if (capteur.getIdSensor() == idSensor)
             continue; // Ignorer le capteur de référence
+
+        // Ajout d'un point à l'utilisateur propriétaire du capteur
+        User* user = getUserBySensorId(capteur.getIdSensor());
+        if (user) user->setNbPoints(user->getNbPoints() + 1);
+
 
         list<Mesure> mesuresComparaison = capteur.getMesuresDansIntervalle(dateDebut, dateFin);
         double similarite = 0.0;
@@ -192,11 +205,9 @@ double GestionnaireSysteme::consulterMoyenneQualite(double longitude, double lat
 
         if (distance <= rayon)
         {
-            auto it = capteurToUser.find(capteur.getIdSensor());
-            if (it != capteurToUser.end()) {
-                it->second->setNbPoints(it->second->getNbPoints() + 1);
-                cout << "Capteur " << capteur.getIdSensor() << " appartient a l'utilisateur " << it->second->getIdUser() << endl;
-            }
+            // Ajout d'un point à l'utilisateur propriétaire du capteur
+            User* user = getUserBySensorId(capteur.getIdSensor());
+            if (user) user->setNbPoints(user->getNbPoints() + 1);
 
             list<Mesure> mesures = capteur.getMesuresDansIntervalle(dateDebut, dateFin);
             for (const Mesure& mesure : mesures)
@@ -277,9 +288,8 @@ void GestionnaireSysteme::loadData() {
             // Retire les espaces ou retours à la ligne en fin de champ
             idSensor.erase(remove_if(idSensor.begin(), idSensor.end(), ::isspace), idSensor.end());
             users.emplace_back(idUser, idSensor);
-            capteurToUser[idSensor] = &users.back();
+            //capteurToUser[idSensor] = &users.back();
         }
     }
-    usersFile.close();
-    
+    usersFile.close();    
 }

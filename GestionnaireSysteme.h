@@ -34,6 +34,7 @@ class GestionnaireSysteme {
         vector<Sensor> getSensors();
         vector<User> getUsers();
         Sensor* getSensorById(const string& id); 
+        User* getUserBySensorId(const string& idSensor);
 
     protected:
         //sensors
@@ -43,7 +44,7 @@ class GestionnaireSysteme {
         //users
         vector<User> users;
         
-        unordered_map<string, User*> capteurToUser;
+        //unordered_map<string, User*> capteurToUser;
 
     };
 
