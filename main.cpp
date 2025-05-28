@@ -106,7 +106,7 @@ double longitude =5.3;
         
         else if (choix == 2) {
             cout << "Entrez l'ID du capteur, date de debut et date de fin (format YYYY-MM-DD HH:MM:SS) : ";
-            cout << "\n<exemple : Sensor1 2019-01-01 00:00:00 2019-01-03 00:00:00 >\n" << endl;
+            cout << "\n<exemple : [Sensor1 2019-01-01 00:00:00 2019-01-03 00:00:00] >\n" << endl;
             string ligne;
             getline(cin, ligne);
             istringstream iss(ligne);
