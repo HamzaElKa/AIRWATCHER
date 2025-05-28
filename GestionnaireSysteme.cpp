@@ -156,7 +156,9 @@ vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(c
 }
     
 #include <cmath>
-
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 static double haversine(double lat1, double lon1, double lat2, double lon2) {
     const double R = 6371.0; // Rayon moyen de la Terre en km
     double dLat = (lat2 - lat1) * M_PI / 180.0;

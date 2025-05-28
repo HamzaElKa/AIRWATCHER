@@ -72,11 +72,17 @@ int main() {
         cout << "Veuillez choisir un scenario (1, 2 ou 3) : ";
         int choix;
         cin >> choix;
+        cin.ignore(); // Pour ignorer le retour à la ligne après l'entrée de l'utilisateur
+
+double longitude =5.3;
+    double latitude = 46.6;
+    double rayon = 30.0;
+    string dateDebut = "2019-02-01 00:00:00";
+    string dateFin = "2019-03-03 00:00:00";
 
         if (choix == 1) {
             cout << "Entrez la longitude, latitude, rayon (en km), date de debut et date de fin (format YYYY-MM-DD HH:MM:SS) : ";
-            cout << "\n<exemple : 4.85 45.75 10.0 2019-01-01 00:00:00 2019-01-03 00:00:00 >\n" << endl;
-            cin.ignore();
+            cout << "\n<exemple : [5.3 46.6 30.0 2019-02-01 00:00:00 2019-03-03 00:00:00] >\n" << endl;
             string ligne;
             getline(cin, ligne);
             istringstream iss(ligne);
@@ -101,7 +107,6 @@ int main() {
         else if (choix == 2) {
             cout << "Entrez l'ID du capteur, date de debut et date de fin (format YYYY-MM-DD HH:MM:SS) : ";
             cout << "\n<exemple : Sensor1 2019-01-01 00:00:00 2019-01-03 00:00:00 >\n" << endl;
-            cin.ignore();
             string ligne;
             getline(cin, ligne);
             istringstream iss(ligne);
