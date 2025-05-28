@@ -69,8 +69,9 @@ int main() {
         cout <<   "Deux scenarios sont disponibles:" << endl;
         cout << "1. Consulter la moyenne AQI sur une zone et periode donnee." << endl;
         cout << "2. Classer les capteurs par similarite." << endl;
-        cout << "3. Quitter le programme." << endl;
-        cout << "Veuillez choisir un scenario (1, 2 ou 3) : ";
+        cout << "3. Voir les points des utilisateurs." << endl;
+        cout << "4. Quitter le programme." << endl;
+        cout << "Veuillez choisir un scenario (1, 2, 3 ou 4) : ";
         int choix;
         cin >> choix;
         cin.ignore(); // Pour ignorer le retour à la ligne après l'entrée de l'utilisateur
@@ -139,8 +140,17 @@ int main() {
         }
 
         else if (choix == 3) {
-            cout << "Fonctionnalite non implemente pour le moment." << endl;
-            // Ici, vous pouvez ajouter d'autres fonctionnalités ou options si nécessaire
+            cout << "Points des utilisateurs" << endl;
+            vector<User> users = gs.getUsers();
+            if (users.empty()) {
+                cout << "Aucun utilisateur trouve." << endl;
+            } else {
+                cout << "Liste des utilisateurs et leurs points :" << endl;
+                for (const User& user : users) {
+                    cout << "Utilisateur ID: " << user.getIdUser() 
+                         << ", Points: " << user.getNbPoints() << endl;
+                }
+            }
         }
 
         else if (choix == 4) {
