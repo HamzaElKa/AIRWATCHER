@@ -4,9 +4,9 @@ Classement des capteurs similaires
     GetMesures(idCapteur,DateDebut,DateFin) (en utilisant celle des capteurs puis en filtrant)
     CalculerSimilarite(mesures1,mesures2)
     TrierCapteursParSimilarite(capteurs, mesures)
-Calcul de la moyenne de l'AQI sur une zone et période donnée
+Calcul de la moyenne de l'AQI sur une zone et periode donnee
     ChercherCapteursVoisins(Long,Lat)
-Recuperer données du dossier data
+Recuperer donnees du dossier data
     LoadData()
 */
 #include "GestionnaireSysteme.h"
@@ -35,7 +35,7 @@ Sensor* GestionnaireSysteme::getSensorById(const string& id) {
     {
         if (capteur.getIdSensor() == id)
         {
-            return &capteur; // Retourne le capteur trouvé
+            return &capteur; // Retourne le capteur trouve
         }
     }
     return nullptr;
@@ -56,8 +56,8 @@ GestionnaireSysteme::GestionnaireSysteme() {
 }
 //destructeur
 GestionnaireSysteme::~GestionnaireSysteme() {
-    // Libération des ressources si nécessaire
-    // Les vecteurs sont automatiquement libérés à la destruction de l'objet
+    // Liberation des ressources si necessaire
+    // Les vecteurs sont automatiquement liberes à la destruction de l'objet
 }
 double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
 {
@@ -128,33 +128,41 @@ vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(c
 {
     vector<pair<Sensor, double>> resultats;
     Sensor* capteurReference = getSensorById(idSensor);
-    // Si le capteur appartient à un utilisateur, incrémenter le nombre de points
+    // Si le capteur appartient à un utilisateur, incrementer le nombre de points
     /*auto it = capteurToUser.find(capteurReference->getIdSensor());
         if (it != capteurToUser.end()) {
             it->second->setNbPoints(it->second->getNbPoints() + 1);
             cout << "Capteur " << capteurReference->getIdSensor() << " appartient a l'utilisateur " << it->second->getIdUser() << endl;
         }*/
     if (!capteurReference)
-        return resultats; // Capteur non trouvé
+        return resultats; // Capteur non trouve
 
-    // Obtenir les mesures du capteur de référence
+    // Obtenir les mesures du capteur de reference
     list<Mesure> mesuresRef = capteurReference->getMesuresDansIntervalle(dateDebut, dateFin);
-
+    if (mesuresRef.empty())
+    {
+        cout << "Aucune mesure trouvee pour le capteur de reference " << idSensor << " dans l'intervalle donne." << endl;
+        return resultats; // Pas de mesures pour le capteur de reference
+    }
     for (Sensor& capteur : sensors)
     {
         if (capteur.getIdSensor() == idSensor)
-            continue; // Ignorer le capteur de référence
+            continue; // Ignorer le capteur de reference
 
-        // Ajout d'un point à l'utilisateur propriétaire du capteur
+        // Ajout d'un point à l'utilisateur proprietaire du capteur
         User* user = getUserBySensorId(capteur.getIdSensor());
         if (user) { 
             user->setNbPoints(user->getNbPoints() + 1);
-            cout<< "Capteur " << capteur.getIdSensor() << " appartient a l'utilisateur " << user->getIdUser() << endl;
+            cout<< "\nCapteur " << capteur.getIdSensor() << " appartient a l'utilisateur " << user->getIdUser() << endl;
+            cout << "Un point a ete ajoute"<< endl;
         }
+
+        
 
         list<Mesure> mesuresComparaison = capteur.getMesuresDansIntervalle(dateDebut, dateFin);
         double similarite = 0.0;
-        // Calculer la similarité
+        // Calculer la similarite (somme des differences absolues des valeurs des mesure/nb de mesures)
+        
         for (const Mesure& mRef : mesuresRef)
         {
             for (const Mesure& mComp : mesuresComparaison)
@@ -165,13 +173,13 @@ vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(c
                 }
             }
         }
-        if (!mesuresComparaison.empty())
+        if (!mesuresComparaison.empty())                
             similarite /= mesuresComparaison.size();
 
         resultats.emplace_back(capteur, similarite);
     }
 
-    // Trier par similarité décroissante
+    // Trier par similarite decroissante
     sort(resultats.begin(), resultats.end(),
          [](const pair<Sensor, double>& a, const pair<Sensor, double>& b) {
              return a.second > b.second;
@@ -207,11 +215,12 @@ double GestionnaireSysteme::consulterMoyenneQualite(double longitude, double lat
 
         if (distance <= rayon)
         {
-            // Ajout d'un point à l'utilisateur propriétaire du capteur
+            // Ajout d'un point à l'utilisateur proprietaire du capteur
             User* user = getUserBySensorId(capteur.getIdSensor());
             if (user) {
                 user->setNbPoints(user->getNbPoints() + 1);
-                cout<< "Capteur " << capteur.getIdSensor() << " appartient a l'utilisateur " << user->getIdUser() << endl;
+                cout<< "\nCapteur " << capteur.getIdSensor() << " appartient a l'utilisateur " << user->getIdUser() << endl;
+                cout << "Un point a ete ajoute"<< endl;
             }
             list<Mesure> mesures = capteur.getMesuresDansIntervalle(dateDebut, dateFin);
             for (const Mesure& mesure : mesures)
@@ -233,7 +242,7 @@ double GestionnaireSysteme::consulterMoyenneQualite(double longitude, double lat
 }
 
 void GestionnaireSysteme::loadData() {
-    // Charger les données des capteurs et des mesures a partir des csv dans le dossier data
+    // Charger les donnees des capteurs et des mesures a partir des csv dans le dossier data
     ifstream attrFile("data/attributes.csv");
     string line;
     getline(attrFile, line); // Ignore header line
@@ -287,7 +296,7 @@ void GestionnaireSysteme::loadData() {
         string idUser, idSensor;
         getline(ss, idUser, ';');
         getline(ss, idSensor, ';');
-        // Enlève le retour à la ligne ou espace éventuel
+        // Enlève le retour à la ligne ou espace eventuel
         if (!idUser.empty() && !idSensor.empty()) {
             // Retire les espaces ou retours à la ligne en fin de champ
             idSensor.erase(remove_if(idSensor.begin(), idSensor.end(), ::isspace), idSensor.end());

@@ -21,8 +21,8 @@ int main() {
     double longitude =3.2; //-1;  3.2
     double latitude =45.2; // 46.8;  45.2
     double rayon = 30.0; 
-    string dateDebut = "2019-02-01 00:00:00";
-    string dateFin = "2019-03-03 00:00:00";
+    string dateDebut = "2019-01-01 00:00:00";
+    string dateFin = "2019-01-03 00:00:00";
     cout <<"\n --- On lance la consultation de la moyenne AQI ---" << endl;
     double moyenneAQI = gs.consulterMoyenneQualite(longitude, latitude, rayon, dateDebut, dateFin);
 
@@ -43,6 +43,9 @@ int main() {
     //j'utilise les dates de debut et de fin du scenario 1
     
     cout << "\n--- On lance le classement des capteurs par similarite ---" << endl;
+    cout << "Capteur ID: " << idSensor 
+         << ", Date de debut: " << dateDebut 
+         << ", Date de fin: " << dateFin << endl;
     vector<pair<Sensor, double>> classement = gs.classerCapteursParSimilarite(idSensor, dateDebut, dateFin);
 
     cout << "\n--- Resultat scenario 2 : Classement des capteurs par similarite ---" << endl;
