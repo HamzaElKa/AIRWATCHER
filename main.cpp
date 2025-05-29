@@ -77,6 +77,12 @@ int main() {
         cout << "Veuillez choisir un scenario (1, 2, 3 ou 4) : ";
         int choix;
         cin >> choix;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Entrée invalide. Veuillez entrer un nombre." << endl;
+            continue;
+        }   
         cin.ignore(); // Pour ignorer le retour à la ligne après l'entrée de l'utilisateur
 
         double longitude;
@@ -127,12 +133,11 @@ int main() {
             iss >> heureFin;
             dateFin += " " + heureFin;
 
-            cout << idSensor << " " << dateDebut << " " << dateFin << endl;
             vector<pair<Sensor, double>> classement = gs.classerCapteursParSimilarite(idSensor, dateDebut, dateFin);
             if (classement.empty()) {
-                cout << "Aucun capteur trouve pour l'ID donne ou aucune mesure disponible." << endl;
+                cout << "\nAucun capteur trouve pour l'ID donne ou aucune mesure disponible." << endl;
             } else {
-                cout << "Classement des capteurs par similarite :" << endl;
+                cout << "\nClassement des capteurs par similarite :" << endl;
                 for (const auto& pair : classement) {
                     const Sensor& sensor = pair.first;
                     double similarite = pair.second;
@@ -143,15 +148,15 @@ int main() {
         }
 
         else if (choix == 3) {
-            cout << "Points des utilisateurs" << endl;
             vector<User> users = gs.getUsers();
             if (users.empty()) {
-                cout << "Aucun utilisateur trouve." << endl;
+                cout << "\nAucun utilisateur trouve." << endl;
             } else {
-                cout << "Liste des utilisateurs et leurs points :" << endl;
+                cout << "\nListe des utilisateurs et leurs points :" << endl;
                 for (const User& user : users) {
-                    cout << "Utilisateur ID: " << user.getIdUser() 
-                         << ", Points: " << user.getNbPoints() << endl;
+                    cout << "Utilisateur ID: " << user.getIdUser()  
+                         << ", Capteur lie: " << user.getIdSensor()
+                        << ", Points: " << user.getNbPoints()<< endl;
                 }
             }
         }

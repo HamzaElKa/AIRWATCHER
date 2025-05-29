@@ -57,8 +57,12 @@ GestionnaireSysteme::GestionnaireSysteme() {
 //destructeur
 GestionnaireSysteme::~GestionnaireSysteme() {
     // Liberation des ressources si necessaire
-    // Les vecteurs sont automatiquement liberes à la destruction de l'objet
+    // Les vecteurs sont automatiquement liberes a la destruction de l'objet
 }
+
+
+
+
 double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
 {
     const std::string& attribut = mesure.getIdAttribut();
@@ -66,7 +70,7 @@ double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
 
     if (attribut == "O3") // Ozone µg/m3
     {
-        valeur = valeur * 240/100; // Conversion de % à µg/m3
+        valeur = valeur * 240/100; // Conversion de % a µg/m3
         if (valeur <= 29) return 1;
         else if (valeur <= 54) return 2;
         else if (valeur <= 79) return 3;
@@ -80,7 +84,7 @@ double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
     }
     else if (attribut == "SO2") // Dioxyde de soufre µg/m3
     {
-        valeur = valeur * 500/100; // Conversion de % à µg/m3
+        valeur = valeur * 500/100; // Conversion de % a µg/m3
         if (valeur <= 39) return 1;
         else if (valeur <= 79) return 2;
         else if (valeur <= 119) return 3;
@@ -94,7 +98,7 @@ double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
     }
     else if (attribut == "NO2") // Dioxyde d'azote µg/m3
     {
-        valeur = valeur * 400/100; // Conversion de % à µg/m3
+        valeur = valeur * 400/100; // Conversion de % a µg/m3
         if (valeur <= 29) return 1;
         else if (valeur <= 54) return 2;
         else if (valeur <= 84) return 3;
@@ -108,7 +112,7 @@ double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
     }
     else if (attribut == "PM10") // Particules fines µg/m3
     {
-        valeur = valeur * 80/100; // Conversion de % à µg/m3
+        valeur = valeur * 80/100; // Conversion de % a µg/m3
         if (valeur <= 6) return 1;
         else if (valeur <= 13) return 2;
         else if (valeur <= 20) return 3;
@@ -124,11 +128,22 @@ double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
     return -1.0; // Attribut non reconnu
 }
 
+//fonction d'ajout des points pour les utilisateurs
+void GestionnaireSysteme::ajouterPointUtilisateur(const string& idSensor) {
+    User* user = getUserBySensorId(idSensor);
+        if (user) { 
+            user->setNbPoints(user->getNbPoints() + 1);
+            cout << "\nUn capteur prive a ete utilise !" << endl;
+            cout<< "Capteur " << idSensor << " appartient a l'utilisateur " << user->getIdUser() << endl;
+            cout << "Un point lui a ete ajoute"<< endl;
+        }
+}
+
 vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(const string& idSensor, const string& dateDebut, const string& dateFin)
 {
     vector<pair<Sensor, double>> resultats;
     Sensor* capteurReference = getSensorById(idSensor);
-    // Si le capteur appartient à un utilisateur, incrementer le nombre de points
+    // Si le capteur appartient a un utilisateur, incrementer le nombre de points
     /*auto it = capteurToUser.find(capteurReference->getIdSensor());
         if (it != capteurToUser.end()) {
             it->second->setNbPoints(it->second->getNbPoints() + 1);
@@ -149,16 +164,9 @@ vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(c
         if (capteur.getIdSensor() == idSensor)
             continue; // Ignorer le capteur de reference
 
-        // Ajout d'un point à l'utilisateur proprietaire du capteur
-        User* user = getUserBySensorId(capteur.getIdSensor());
-        if (user) { 
-            user->setNbPoints(user->getNbPoints() + 1);
-            cout<< "\nCapteur " << capteur.getIdSensor() << " appartient a l'utilisateur " << user->getIdUser() << endl;
-            cout << "Un point a ete ajoute"<< endl;
-        }
-
+        // Ajout d'un point a l'utilisateur proprietaire du capteur
+        ajouterPointUtilisateur(capteur.getIdSensor());
         
-
         list<Mesure> mesuresComparaison = capteur.getMesuresDansIntervalle(dateDebut, dateFin);
         double similarite = 0.0;
         // Calculer la similarite (somme des differences absolues des valeurs des mesure/nb de mesures)
@@ -187,7 +195,10 @@ vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(c
 
     return resultats;
 }
-    
+
+
+
+
 #include <cmath>
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -215,13 +226,9 @@ double GestionnaireSysteme::consulterMoyenneQualite(double longitude, double lat
 
         if (distance <= rayon)
         {
-            // Ajout d'un point à l'utilisateur proprietaire du capteur
-            User* user = getUserBySensorId(capteur.getIdSensor());
-            if (user) {
-                user->setNbPoints(user->getNbPoints() + 1);
-                cout<< "\nCapteur " << capteur.getIdSensor() << " appartient a l'utilisateur " << user->getIdUser() << endl;
-                cout << "Un point a ete ajoute"<< endl;
-            }
+            // Ajout d'un point a l'utilisateur proprietaire du capteur
+            ajouterPointUtilisateur(capteur.getIdSensor());
+            // Recuperation des mesures dans l'intervalle de dates
             list<Mesure> mesures = capteur.getMesuresDansIntervalle(dateDebut, dateFin);
             for (const Mesure& mesure : mesures)
             {
@@ -296,9 +303,9 @@ void GestionnaireSysteme::loadData() {
         string idUser, idSensor;
         getline(ss, idUser, ';');
         getline(ss, idSensor, ';');
-        // Enlève le retour à la ligne ou espace eventuel
+        // Enlève le retour a la ligne ou espace eventuel
         if (!idUser.empty() && !idSensor.empty()) {
-            // Retire les espaces ou retours à la ligne en fin de champ
+            // Retire les espaces ou retours a la ligne en fin de champ
             idSensor.erase(remove_if(idSensor.begin(), idSensor.end(), ::isspace), idSensor.end());
             users.emplace_back(idUser, idSensor);
             //capteurToUser[idSensor] = &users.back();
