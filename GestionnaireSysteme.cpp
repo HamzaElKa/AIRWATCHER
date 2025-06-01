@@ -1,14 +1,3 @@
-/*
-A programmer
-Classement des capteurs similaires
-    GetMesures(idCapteur,DateDebut,DateFin) (en utilisant celle des capteurs puis en filtrant)
-    CalculerSimilarite(mesures1,mesures2)
-    TrierCapteursParSimilarite(capteurs, mesures)
-Calcul de la moyenne de l'AQI sur une zone et periode donnee
-    ChercherCapteursVoisins(Long,Lat)
-Recuperer donnees du dossier data
-    LoadData()
-*/
 #include "GestionnaireSysteme.h"
 #include "Mesure.h"
 #include <cmath>
@@ -48,6 +37,7 @@ User* GestionnaireSysteme::getUserBySensorId(const string& idSensor) {
     }
     return nullptr;
 }
+
 //constructeur
 GestionnaireSysteme::GestionnaireSysteme() {
     // Initialisation des attributs et capteurs
@@ -57,7 +47,7 @@ GestionnaireSysteme::GestionnaireSysteme() {
 //destructeur
 GestionnaireSysteme::~GestionnaireSysteme() {
     // Liberation des ressources si necessaire
-    // Les vecteurs sont automatiquement liberes a la destruction de l'objet
+    // Les vecteurs sont automatiquement libérés à la destruction de l'objet
 }
 
 
@@ -65,9 +55,10 @@ GestionnaireSysteme::~GestionnaireSysteme() {
 
 double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
 {
-    const std::string& attribut = mesure.getIdAttribut();
-    double valeur = mesure.getValue();
+    const std::string& attribut = mesure.getIdAttribut(); // Récupère le nom de l'attribut (polluant) de la mesure (ex: "O3", "SO2", etc.)
+    double valeur = mesure.getValue(); // Récupère la valeur numérique de la mesure (ex: concentration relevée)
 
+    //Seuils obtenus via wikipedia
     if (attribut == "O3") // Ozone µg/m3
     {
         valeur = valeur * 240/100; // Conversion de % a µg/m3
@@ -79,7 +70,7 @@ double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
         else if (valeur <= 149) return 6;
         else if (valeur <= 179) return 7;
         else if (valeur <= 209) return 8;
-        else if (valeur <= 239) return 9;
+        else if (valeur <= 239) return 9; 
         else return 10;
     }
     else if (attribut == "SO2") // Dioxyde de soufre µg/m3
@@ -125,30 +116,26 @@ double GestionnaireSysteme::convertirEnAQI(const Mesure& mesure)
         else return 10;
     }
 
-    return -1.0; // Attribut non reconnu
+    return -1.0; // Attribut non reconnu (n'est pas censé arriver)
 }
 
-//fonction d'ajout des points pour les utilisateurs
+//Ajout des points pour les utilisateurs
 void GestionnaireSysteme::ajouterPointUtilisateur(const string& idSensor) {
-    User* user = getUserBySensorId(idSensor);
-        if (user) { 
-            user->setNbPoints(user->getNbPoints() + 1);
-            cout << "\nUn capteur prive a ete utilise !" << endl;
-            cout<< "Capteur " << idSensor << " appartient a l'utilisateur " << user->getIdUser() << endl;
-            cout << "Un point lui a ete ajoute"<< endl;
+    User* user = getUserBySensorId(idSensor); // Récupère l'utilisateur associé au capteur
+        if (user) { // Si l'utilisateur existe
+            user->setNbPoints(user->getNbPoints() + 1); // Incrémente le nombre de points de l'utilisateur
+            cout << "\nUn capteur prive a été utilisé !" << endl;
+            cout<< "Capteur " << idSensor << " appartient à l'utilisateur " << user->getIdUser() << endl;
+            cout << "Un point lui a été ajouté"<< endl;
         }
 }
 
+// Classement des capteurs par similarité
 vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(const string& idSensor, const string& dateDebut, const string& dateFin)
 {
     vector<pair<Sensor, double>> resultats;
-    Sensor* capteurReference = getSensorById(idSensor);
-    // Si le capteur appartient a un utilisateur, incrementer le nombre de points
-    /*auto it = capteurToUser.find(capteurReference->getIdSensor());
-        if (it != capteurToUser.end()) {
-            it->second->setNbPoints(it->second->getNbPoints() + 1);
-            cout << "Capteur " << capteurReference->getIdSensor() << " appartient a l'utilisateur " << it->second->getIdUser() << endl;
-        }*/
+    Sensor* capteurReference = getSensorById(idSensor); // Récupère le capteur de référence par son ID
+
     if (!capteurReference)
         return resultats; // Capteur non trouve
 
@@ -161,11 +148,12 @@ vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(c
     }
     for (Sensor& capteur : sensors)
     {
-        if (capteur.getIdSensor() == idSensor)
-            continue; // Ignorer le capteur de reference
-
+        
         // Ajout d'un point a l'utilisateur proprietaire du capteur
         ajouterPointUtilisateur(capteur.getIdSensor());
+
+        if (capteur.getIdSensor() == idSensor)
+            continue; // Ignorer le capteur de reference
         
         list<Mesure> mesuresComparaison = capteur.getMesuresDansIntervalle(dateDebut, dateFin);
         double similarite = 0.0;
@@ -177,14 +165,14 @@ vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(c
             {
                 if (mRef.getIdAttribut() == mComp.getIdAttribut())
                 {
-                    similarite += fabs(mRef.getValue() - mComp.getValue());
+                    similarite += fabs(mRef.getValue() - mComp.getValue()); // Difference absolue entre les valeurs des mesures
                 }
             }
         }
         if (!mesuresComparaison.empty())                
-            similarite /= mesuresComparaison.size();
+            similarite /= mesuresComparaison.size(); // Moyenne des differences absolues
 
-        resultats.emplace_back(capteur, similarite);
+        resultats.emplace_back(capteur, similarite); // Ajoute le capteur et sa similarite dans le vecteur de resultats
     }
 
     // Trier par similarite decroissante
@@ -201,30 +189,31 @@ vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(c
 
 #include <cmath>
 #ifndef M_PI
-#define M_PI 3.14159265358979323846
+#define M_PI 3.14159265358979323846 
 #endif
+// Fonction pour calculer la distance entre deux points géographiques en utilisant la formule de Haversine
 static double haversine(double lat1, double lon1, double lat2, double lon2) {
     const double R = 6371.0; // Rayon moyen de la Terre en km
-    double dLat = (lat2 - lat1) * M_PI / 180.0;
-    double dLon = (lon2 - lon1) * M_PI / 180.0;
-    double a = sin(dLat/2) * sin(dLat/2) +
+    double dLat = (lat2 - lat1) * M_PI / 180.0; // Conversion des degrés en radians
+    double dLon = (lon2 - lon1) * M_PI / 180.0; 
+    double a = sin(dLat/2) * sin(dLat/2) + 
                cos(lat1 * M_PI / 180.0) * cos(lat2 * M_PI / 180.0) *
-               sin(dLon/2) * sin(dLon/2);
-    double c = 2 * atan2(sqrt(a), sqrt(1-a));
-    return R * c;
+               sin(dLon/2) * sin(dLon/2); 
+    double c = 2 * atan2(sqrt(a), sqrt(1-a)); // Calcul de l'angle central
+    return R * c; // Distance en km
 }
 
-
+// Fonction pour consulter la moyenne de la qualité de l'air (AQI) dans une zone donnée
 double GestionnaireSysteme::consulterMoyenneQualite(double longitude, double latitude, double rayon, const string& dateDebut, const string& dateFin)
 {
-    double sommeAQI = 0.0;
-    int compteur = 0;
+    double sommeAQI = 0.0; 
+    int compteur = 0; // Compteur de mesures AQI valides
 
     for (Sensor& capteur : sensors)
     {
         double distance = haversine(latitude, longitude, capteur.getLatitude(), capteur.getLongitude());
 
-        if (distance <= rayon)
+        if (distance <= rayon) // Si le capteur est dans le rayon spécifié
         {
             // Ajout d'un point a l'utilisateur proprietaire du capteur
             ajouterPointUtilisateur(capteur.getIdSensor());
@@ -232,28 +221,29 @@ double GestionnaireSysteme::consulterMoyenneQualite(double longitude, double lat
             list<Mesure> mesures = capteur.getMesuresDansIntervalle(dateDebut, dateFin);
             for (const Mesure& mesure : mesures)
             {
-                double aqi = convertirEnAQI(mesure);
-                if (aqi >= 0)
+                double aqi = convertirEnAQI(mesure); // Conversion de la mesure en AQI
+                if (aqi >= 0) // Si la conversion a réussi (AQI valide et attribut reconnu)
                 {
-                    sommeAQI += aqi;
-                    compteur++;
+                    sommeAQI += aqi; // Ajout de l'AQI à la somme totale
+                    compteur++; // Incrémentation du compteur de mesures AQI valides
                 }
             }
         }
     }
 
-    if (compteur == 0)
-        return -1.0;
+    if (compteur == 0) // Si aucun AQI valide n'a été trouvé
+        return -1.0; // Indique qu'aucune mesure AQI n'a été trouvée dans la zone
 
-    return sommeAQI / compteur;
+    return sommeAQI / compteur; // Retourne la moyenne des AQI
 }
 
+ // Fonction pour charger les données des capteurs, mesures et utilisateurs à partir des fichiers CSV
 void GestionnaireSysteme::loadData() {
     // Charger les donnees des capteurs et des mesures a partir des csv dans le dossier data
     ifstream attrFile("data/attributes.csv");
     string line;
-    getline(attrFile, line); // Ignore header line
-    while (getline(attrFile, line)) {
+    getline(attrFile, line); // Ignorer la ligne header (c'est le seul fichier qui en a un)
+    while (getline(attrFile, line)) { 
         stringstream ss(line);
         string id, unit, description;
         getline(ss, id, ';');
@@ -263,6 +253,7 @@ void GestionnaireSysteme::loadData() {
             attributs.emplace_back(id, unit, description);
     }
     attrFile.close();
+
     // Charger les capteurs
     ifstream sensorsFile("data/sensors.csv");
     while (getline(sensorsFile, line)) {
@@ -289,27 +280,27 @@ void GestionnaireSysteme::loadData() {
         float value = stof(valueStr);
 
         // Trouver le capteur correspondant
-        auto it = find_if(sensors.begin(), sensors.end(),
-            [&](const Sensor& s) { return s.getIdSensor() == sensorId; });
-        if (it != sensors.end()) {
-            it->addMesure(Mesure(date, attrId, value));
+        auto it = find_if(sensors.begin(), sensors.end(), // Utilisation de find_if pour trouver le capteur par son ID
+            [&](const Sensor& s) { return s.getIdSensor() == sensorId; }); 
+        if (it != sensors.end()) { // Si le capteur a été trouvé
+            it->addMesure(Mesure(date, attrId, value)); // Ajout de la mesure au capteur
         }
     }
     measFile.close();
 
+    // Charger les utilisateurs avec leurs capteurs
     ifstream usersFile("data/users.csv");
     while (getline(usersFile, line)) {
         stringstream ss(line);
         string idUser, idSensor;
         getline(ss, idUser, ';');
         getline(ss, idSensor, ';');
-        // Enlève le retour a la ligne ou espace eventuel
         if (!idUser.empty() && !idSensor.empty()) {
             // Retire les espaces ou retours a la ligne en fin de champ
-            idSensor.erase(remove_if(idSensor.begin(), idSensor.end(), ::isspace), idSensor.end());
-            users.emplace_back(idUser, idSensor);
-            //capteurToUser[idSensor] = &users.back();
+            idSensor.erase(remove_if(idSensor.begin(), idSensor.end(), ::isspace), idSensor.end()); 
+            users.emplace_back(idUser, idSensor); // Ajout de l'utilisateur avec son capteur
         }
     }
     usersFile.close();    
 }
+

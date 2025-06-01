@@ -44,5 +44,6 @@
         "typeinfo": "cpp",
         "iomanip": "cpp",
         "string_view": "cpp"
-    }
+    },
+    "makefile.configureOnOpen": false
 }

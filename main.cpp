@@ -92,13 +92,13 @@ int main() {
         string dateFin;
         string idSensor;
 
-        if (choix == 1) {
+        if (choix == 1) { // Consulter la moyenne AQI sur une zone et période donnée
             cout << "Entrez la longitude, latitude, rayon (en km), date de debut et date de fin (format YYYY-MM-DD HH:MM:SS) : ";
             cout << "\n<exemple : [5.3 46.6 30.0 2019-02-01 00:00:00 2019-03-03 00:00:00] >\n" << endl;
             string ligne;
             getline(cin, ligne);
             istringstream iss(ligne);
-            iss >> longitude >> latitude >> rayon;
+            iss >> longitude >> latitude >> rayon; // Lire la longitude, latitude et rayon
             iss >> ws;
             getline(iss, dateDebut, ' ');
             string heureDebut;
@@ -109,14 +109,15 @@ int main() {
             iss >> heureFin;
             dateFin += " " + heureFin;
 
+            // Appel de la méthode pour consulter la moyenne AQI
             double moyenne = gs.consulterMoyenneQualite(longitude, latitude, rayon, dateDebut, dateFin);
-            if (moyenne < 0)
+            if (moyenne < 0) // Si aucune mesure AQI n'a été trouvée
                 cout << "Aucune donnee AQI disponible pour la zone et periode donnees." << endl;
-            else
+            else // Affichage de la moyenne AQI
                 cout << "Moyenne AQI : " << moyenne << endl;
         }
         
-        else if (choix == 2) {
+        else if (choix == 2) { // Classement des capteurs par similarité
             cout << "Entrez l'ID du capteur, date de debut et date de fin (format YYYY-MM-DD HH:MM:SS) : ";
             cout << "\n<exemple : [Sensor1 2019-01-01 00:00:00 2019-01-03 00:00:00] >\n" << endl;
             string ligne;
@@ -147,22 +148,22 @@ int main() {
             }
         }
 
-        else if (choix == 3) {
+        else if (choix == 3) { // Voir les points des utilisateurs
             vector<User> users = gs.getUsers();
             if (users.empty()) {
                 cout << "\nAucun utilisateur trouve." << endl;
             } else {
                 cout << "\nListe des utilisateurs et leurs points :" << endl;
                 for (const User& user : users) {
-                    cout << "Utilisateur ID: " << user.getIdUser()  
-                         << ", Capteur lie: " << user.getIdSensor()
-                        << ", Points: " << user.getNbPoints()<< endl;
+                    cout << "Utilisateur ID : " << user.getIdUser()  
+                         << ", Capteur : " << user.getIdSensor()
+                        << ", Points : " << user.getNbPoints()<< endl;
                 }
             }
         }
 
-        else if (choix == 4) {
-            break; // Quitter le programme
+        else if (choix == 4) { // Quitter le programme
+            break; 
         } 
         else {
             cout << "Choix invalide. Veuillez reessayer." << endl;
@@ -172,7 +173,5 @@ int main() {
     
     cout << "\n--- Fin du programme ---" << endl;
 
-
-    
     return 0;
 }
