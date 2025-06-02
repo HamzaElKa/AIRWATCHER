@@ -1,3 +1,4 @@
+#include <string>
 #include "User.h"
 #include "Sensor.h"
 
@@ -7,14 +8,11 @@ protected:
     Sensor* capteur;
 
 public:
-    PrivateUser(const string& id = "", const string& mdp = "", int pts = 0);
-
+    PrivateUser(const std::string& id, const std::string& mdp, int pts);
     int getNbPoints() const;
     Sensor* getSensor() const;
-
     void setNbPoints(int pts);
     void setSensor(Sensor* s);
-
     void consulterProfil() const;
-    void connexion() const override; // redéfinition de la méthode connexion
+    void connexion() const;
 };
