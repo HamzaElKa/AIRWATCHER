@@ -1,26 +1,28 @@
-#include "Provider.h"
+#include "PrivateUser.h"
 #include <iostream>
+#include <string>
 
-Provider::Provider(const string& id, const string& mdp, const string& name)
-    : User(id, mdp), companyName(name) {}
+using namespace std;
 
-string Provider::getCompanyName() const {
-    return companyName;
+PrivateUser::PrivateUser(const string& id, const string& m, int pts)
+    : User(id, m), nbPoints(pts), capteur(nullptr) {}
+
+int PrivateUser::getNbPoints() const { return nbPoints; }
+Sensor* PrivateUser::getSensor() const { return capteur; }
+
+void PrivateUser::setNbPoints(int pts) { nbPoints = pts; }
+void PrivateUser::setSensor(Sensor* s) { capteur = s; }
+
+void PrivateUser::consulterProfil() const {
+    cout << "Profil de l'utilisateur privé : " << idUser
+         << " | Points : " << nbPoints << endl;
+
+    if (capteur)
+        cout << "Capteur associé : " << capteur->getIdSensor() << endl;
+    else
+        cout << "Aucun capteur associé." << endl;
 }
 
-void Provider::setCompanyName(const string& name) {
-    companyName = name;
-}
-
-void Provider::addAirCleaner(AirCleaner* cleaner) {
-    airCleaners.push_back(cleaner);
-}
-
-const list<AirCleaner*>& Provider::getAirCleaners() const {
-    return airCleaners;
-}
-
-void Provider::connexion() const {
-    cout << "Connexion fournisseur : " << idUser
-         << " | Société : " << companyName << endl;
+void PrivateUser::connexion() const {
+    cout << "Connexion utilisateur privé : " << idUser << endl;
 }
