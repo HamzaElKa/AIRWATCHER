@@ -12,69 +12,17 @@ using namespace std;
 
 int main() {
     GestionnaireSysteme gs;
-    gs.loadData();  
-
-    cout << "=== TESTS UNITAIRES SUR LES DONNEES CHARGEES ===" << endl;
-
-    // Test 1 : Distance entre Sensor0 et Sensor1
-    Sensor* s1 = gs.getSensorById("Sensor0");
-    Sensor* s2 = gs.getSensorById("Sensor1");
-    if (s1 && s2) {
-        float dx = s1->getLongitude() - s2->getLongitude();
-        float dy = s1->getLatitude() - s2->getLatitude();
-        float dist = sqrt(dx * dx + dy * dy);
-        cout << "[TEST DISTANCE] Distance entre Sensor0 et Sensor1 : " << dist << endl;
-    } else {
-        cout << "[ERREUR] Capteurs Sensor0 ou Sensor1 non trouvés." << endl;
-    }
-
-    // Test 2 : Mesures de Sensor0 dans un intervalle
-    string dateDebut = "2019-01-01 00:00:00";
-    string dateFin = "2019-01-02 00:00:00";
-    if (s1) {
-        list<Mesure> listeMesures = s1->getMesuresDansIntervalle(dateDebut, dateFin);
-        vector<Mesure> mesures(listeMesures.begin(), listeMesures.end());
-        cout << "[TEST MESURES] Sensor0 entre " << dateDebut << " et " << dateFin << ": " << mesures.size() << " mesure(s)." << endl;
-        for (const auto& m : mesures) {
-            cout << " - Attribut: " << m.getIdAttribut() << ", Valeur: " << m.getValue() << endl;
-        }
-    }
-
-    // Test 3 : Moyenne AQI sur une zone
-    double longitude = 3.2;
-    double latitude = 45.2;
-    double rayon = 30.0;
-    double moyenneAQI = gs.consulterMoyenneQualite(longitude, latitude, rayon, dateDebut, dateFin);
-    if (moyenneAQI < 0)
-        cout << "[TEST AQI] Aucune donnée AQI pour la zone spécifiée." << endl;
-    else
-        cout << "[TEST AQI] Moyenne AQI : " << moyenneAQI << endl;
-
-    // Test 4 : Classement par similarité
-    string idSensor = "Sensor0";
-    vector<pair<Sensor, double>> classement = gs.classerCapteursParSimilarite(idSensor, dateDebut, dateFin);
-    if (classement.empty()) {
-        cout << "[TEST SIMILARITE] Aucun classement disponible." << endl;
-    } else {
-        cout << "[TEST SIMILARITE] Classement pour Sensor0 :" << endl;
-        for (const auto& pair : classement) {
-            cout << " - " << pair.first.getIdSensor() << " : " << pair.second << endl;
-        }
-    }
-
-    // Test 5 : Utilisateurs et capteurs associés
+    gs.loadData(); 
+    
+        // Déclarations des variables utilisées
+    string dateDebut, dateFin;
+    double moyenneAQI;
+    double longitude = 0.0, latitude = 0.0, rayon = 0.0;
+    string idSensor;
+    vector<pair<Sensor, double>> classement;
     const vector<User>& users = gs.getUsers();
-    if (!users.empty()) {
-        cout << "[TEST UTILISATEURS] Liste des utilisateurs :" << endl;
-        for (const auto& u : users) {
-            cout << " - ID: " << u.getIdUser() << ", Capteur: " << u.getIdSensor() << endl;
-        }
-    } else {
-        cout << "[TEST UTILISATEURS] Aucun utilisateur chargé." << endl;
-    }
 
-    cout << "\n=== FIN DES TESTS ===" << endl;
-
+     
     // --- SCENARIO 1 ---
     cout << "\n On TEST LE SCENARIO 1 : Moyenne AQI sur une zone et periode donnee" << endl;
     dateDebut = "2019-01-01 00:00:00";
