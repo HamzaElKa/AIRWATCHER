@@ -29,14 +29,15 @@ class GestionnaireSysteme {
         double consulterMoyenneQualite(double lon, double lat, double rayon,
                                const string& dateDebut, const string& dateFin);
 
-    
+        static double haversine(double lat1, double lon1, double lat2, double lon2);
+
         //SCENARIO 2 Classement des capteurs par similarité, renvoie une liste tuple de capteurs triée selon un pourcentage de similarité et leur dit-pourcentage
         vector<pair<Sensor, double>> classerCapteursParSimilarite(const string& idSensor, const string& dateDebut, const string& dateFin);
         
         //getters
         vector<Attribut> getAttributes();
         vector<Sensor> getSensors();
-        vector<User> getUsers();
+        const vector<User>& getUsers() const;
         Sensor* getSensorById(const string& id); 
         User* getUserBySensorId(const string& idSensor);
 

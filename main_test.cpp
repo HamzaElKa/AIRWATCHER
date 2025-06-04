@@ -39,10 +39,11 @@ bool testFonction(const string& nomTest, Func fonction, Expected attendu, Args..
 }
 
 // Fonctions à tester
-float calculerDistance(Sensor* s1, Sensor* s2) {
-    float dx = s1->getLongitude() - s2->getLongitude();
-    float dy = s1->getLatitude() - s2->getLatitude();
-    return sqrt(dx * dx + dy * dy);
+float calculerDistance(GestionnaireSysteme& gs, Sensor* s1, Sensor* s2) {
+    return static_cast<float>(gs.haversine(
+        s1->getLatitude(), s1->getLongitude(),
+        s2->getLatitude(), s2->getLongitude()
+    ));
 }
 
 int compterMesures(Sensor* s, const string& debut, const string& fin) {
@@ -96,8 +97,8 @@ int main() {
     Sensor* s0 = gs.getSensorById("Sensor0");
     Sensor* s1 = gs.getSensorById("Sensor1");
     if (s0 && s1) {
-        float dist = calculerDistance(s0, s1);
-        testFonction("Distance Sensor0/Sensor1", calculerDistance, dist, s0, s1);
+        float dist = calculerDistance(gs, s0, s1);
+        testFonction("Distance Sensor0/Sensor1", calculerDistance, dist, gs,s0, s1);
         testFonction("Nb mesures Sensor0", compterMesures, compterMesures(s0, dateDebut, dateFin), s0, dateDebut, dateFin);
         testFonction("Première valeur de mesure Sensor0", getPremiereValeurMesure, getPremiereValeurMesure(s0, dateDebut, dateFin), s0, dateDebut, dateFin);
     } else {
@@ -106,7 +107,7 @@ int main() {
 
     testFonction("Capteur Sensor0 existe", capteurExiste, true, gs, "Sensor0");
     testFonction("Nombre de capteurs similaires à Sensor0", nombreCapteursSimilaires,
-                 nombreCapteursSimilaires(gs, "Sensor0", dateDebut, dateFin),
+                 99,
                  gs, "Sensor0", dateDebut, dateFin);
 
     testFonction("Moyenne AQI zone", calculerMoyenneAQI,
@@ -117,6 +118,49 @@ int main() {
     testFonction("Nombre total de capteurs", nombreTotalCapteurs, gs.getSensors().size(), gs);
     testFonction("Nom du premier utilisateur", nomPremierUtilisateur, nomPremierUtilisateur(gs), gs);
     testFonction("Classement des capteurs valide", classementValide, true, gs, "Sensor0", dateDebut, dateFin);
+    
+    
+        // Déclarations des variables utilisées
+    double moyenneAQI;
+    double longitude = -0.3 , latitude = 44.0, rayon = 10;
+    string idSensor;
+    vector<pair<Sensor, double>> classement;
+
+     
+    // --- SCENARIO 1 ---
+    cout << "\n On teste le scénario 1 : Moyenne AQI sur une zone et periode donnee" << endl;
+    dateDebut = "2019-01-01 00:00:00";
+    dateFin = "2019-01-03 00:00:00";
+    cout << "\n --- On lance la consultation de la moyenne AQI ---" << endl;
+    moyenneAQI = gs.consulterMoyenneQualite(longitude, latitude, rayon, dateDebut, dateFin);
+    cout << "\n--- Resultat scenario 1 : Moyenne AQI ---" << endl;
+    if (moyenneAQI < 0)
+        cout << "Aucune donnee AQI disponible pour la zone et periode donnees." << endl;
+    else
+        cout << "Moyenne AQI sur la zone (" << latitude << ", " << longitude
+             << "), rayon " << rayon << " km entre " << dateDebut
+             << " et " << dateFin << " : " << moyenneAQI << endl;
+
+    // --- SCENARIO 2 ---
+    cout << "\n On teste le scénario 2 : Classement des capteurs par similarite" << endl;
+    idSensor = "Sensor1";
+    cout << "\n--- On lance le classement des capteurs par similarite ---" << endl;
+    cout << "Capteur ID: " << idSensor 
+         << ", Date de debut: " << dateDebut 
+         << ", Date de fin: " << dateFin << endl;
+    classement = gs.classerCapteursParSimilarite(idSensor, dateDebut, dateFin);
+    cout << "\n--- Resultat scenario 2 : Classement des capteurs par similarite ---" << endl;
+    if (classement.empty()) {
+        cout << "Aucun capteur trouve pour l'ID donne ou aucune mesure disponible." << endl;
+    } else {
+        cout << "Classement des capteurs par similarite pour le capteur " << idSensor << " :" << endl;
+        for (const auto& pair : classement) {
+            const Sensor& sensor = pair.first;
+            double similarite = pair.second;
+            cout << "Capteur ID: " << sensor.getIdSensor() 
+                 << ", Similarite: " << similarite << "%" << endl;
+        }
+    }
 
     return 0;
 }

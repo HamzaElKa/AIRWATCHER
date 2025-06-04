@@ -16,48 +16,12 @@ int main() {
     
         // Déclarations des variables utilisées
     string dateDebut, dateFin;
-    double moyenneAQI;
-    double longitude = 0.0, latitude = 0.0, rayon = 0.0;
+    double longitude = -0.3 , latitude = 44.0, rayon = 10;
     string idSensor;
     vector<pair<Sensor, double>> classement;
     const vector<User>& users = gs.getUsers();
 
      
-    // --- SCENARIO 1 ---
-    cout << "\n On TEST LE SCENARIO 1 : Moyenne AQI sur une zone et periode donnee" << endl;
-    dateDebut = "2019-01-01 00:00:00";
-    dateFin = "2019-01-03 00:00:00";
-    cout << "\n --- On lance la consultation de la moyenne AQI ---" << endl;
-    moyenneAQI = gs.consulterMoyenneQualite(longitude, latitude, rayon, dateDebut, dateFin);
-    cout << "\n--- Resultat scenario 1 : Moyenne AQI ---" << endl;
-    if (moyenneAQI < 0)
-        cout << "Aucune donnee AQI disponible pour la zone et periode donnees." << endl;
-    else
-        cout << "Moyenne AQI sur la zone (" << latitude << ", " << longitude
-             << "), rayon " << rayon << " km entre " << dateDebut
-             << " et " << dateFin << " : " << moyenneAQI << endl;
-
-    // --- SCENARIO 2 ---
-    cout << "\n On TEST LE SCENARIO 2 : Classement des capteurs par similarite" << endl;
-    idSensor = "Sensor1";
-    cout << "\n--- On lance le classement des capteurs par similarite ---" << endl;
-    cout << "Capteur ID: " << idSensor 
-         << ", Date de debut: " << dateDebut 
-         << ", Date de fin: " << dateFin << endl;
-    classement = gs.classerCapteursParSimilarite(idSensor, dateDebut, dateFin);
-    cout << "\n--- Resultat scenario 2 : Classement des capteurs par similarite ---" << endl;
-    if (classement.empty()) {
-        cout << "Aucun capteur trouve pour l'ID donne ou aucune mesure disponible." << endl;
-    } else {
-        cout << "Classement des capteurs par similarite pour le capteur " << idSensor << " :" << endl;
-        for (const auto& pair : classement) {
-            const Sensor& sensor = pair.first;
-            double similarite = pair.second;
-            cout << "Capteur ID: " << sensor.getIdSensor() 
-                 << ", Similarite: " << similarite << "%" << endl;
-        }
-    }
-
     // Interface utilisateur
     while (true) {
         cout << "\n<=====    Interface utilisateur     =====>" << endl;
@@ -139,7 +103,7 @@ int main() {
                 cout << "\nListe des utilisateurs et leurs points :" << endl;
                 for (const User& user : users) {
                     cout << "Utilisateur ID : " << user.getIdUser()  
-                         << ", Capteur : " << user.getIdSensor() << endl;
+                         << ", Capteur : " << user.getIdSensor() <<", Points : " << user.getNbPoints()  << endl;
                 }
             }
         }

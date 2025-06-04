@@ -15,7 +15,7 @@ vector<Sensor> GestionnaireSysteme::getSensors() {
     return sensors;
 }
 
-vector<User> GestionnaireSysteme::getUsers() {
+const vector<User>& GestionnaireSysteme::getUsers() const {
     return users;
 }
 
@@ -192,7 +192,7 @@ vector<pair<Sensor, double>> GestionnaireSysteme::classerCapteursParSimilarite(c
 #define M_PI 3.14159265358979323846 
 #endif
 // Fonction pour calculer la distance entre deux points géographiques en utilisant la formule de Haversine
-static double haversine(double lat1, double lon1, double lat2, double lon2) {
+double GestionnaireSysteme::haversine(double lat1, double lon1, double lat2, double lon2) {
     const double R = 6371.0; // Rayon moyen de la Terre en km
     double dLat = (lat2 - lat1) * M_PI / 180.0; // Conversion des degrés en radians
     double dLon = (lon2 - lon1) * M_PI / 180.0; 
